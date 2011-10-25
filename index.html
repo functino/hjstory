@@ -68,7 +68,9 @@
         .timeline {
            /* -webkit-transform: rotate(5deg);*/
            cursor:pointer;
-           margin-top:-40px;
+           margin-top:-100px;
+           position: absolute;
+           bottom:60px;
         }
         
         .timeline .decade {
@@ -132,6 +134,7 @@
             background-color: rgba(200, 200, 200, 0.1);
             border-radius: 10px;
             -webkit-transform: rotate(-4deg);
+            top: -350px;
         }
         
         
@@ -144,6 +147,42 @@
             background-color: white;
             color:#cc0800;
             font-size:30px;
+        }        
+        
+        .health {
+            position:absolute;
+            right: 20px;
+            top:10px;
+        }
+        
+        .points {
+            position:absolute;
+            left: 20px;
+            top:10px;
+        }        
+        
+        .points .value {
+            font-size:50px;
+        }
+        
+        .health img {
+        }
+        
+        .health img.live.lost {
+            opacity:0.2;
+        }
+        
+        .pause {
+            position: absolute;
+            opacity: 0.4;
+            bottom: 10px;
+            left: 10px;
+        }
+        .pause:hover {
+            position: absolute;
+            opacity: 1;
+            bottom: 10px;
+            left: 10px;
         }        
     </style>
 </head>
@@ -169,8 +208,18 @@
 <br /><br /><br /><br />
 <div class="body">
     <div class="container">
+    <div class="points">
+        <img src="icons/48x48/star.png" />
+        <span class="value">600</spaan>
+    </div>    
+    <div class="health">
+        <img src="icons/48x48/favourites.png" class="live"/>        <img src="icons/48x48/favourites.png" class="live"/>        <img src="icons/48x48/favourites.png" class="live lost" />
+    </div>    
+    <div class="pause">
+        <img src="pause.png" >
+    </div>
     <div class="background">Quizstory</div>
-    <div class="hint">Die Berliner Mauer faellt</div>
+    <div class="hint">The Offspring - Hit That haelt sich 3 Wochen auf Platz 1</div>
     <div class="timeline">
         <div class="decade">
             <div class="value">1930</div>
