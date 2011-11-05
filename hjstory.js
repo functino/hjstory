@@ -8,17 +8,7 @@
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   jQuery(function($) {
-    var Hint, Horst, hint, horst, i, randomHint, theyear, year, _i, _results;
-    theyear = _.first(_.shuffle((function() {
-      _results = [];
-      for (_i = 1980; _i <= 2011; _i++){ _results.push(_i); }
-      return _results;
-    }).apply(this, arguments)));
-    $('.progress').attr({
-      title: theyear
-    });
-    i = 0;
-    year = years[theyear];
+    var Hint, Horst, hint, horst, moved, myInterval, nearestLeft, points, startRound;
     Hint = (function() {
       function Hint() {
         Hint.__super__.constructor.apply(this, arguments);
@@ -57,31 +47,53 @@
       };
       return Horst;
     })();
+    points = 0;
     hint = new Hint({
       text: "Starting....",
-      year: theyear
+      year: 0
     });
     horst = new Horst({
       el: $(".hint"),
       model: hint
     });
-    horst.render();
-    randomHint = function() {
-      var data;
-      data = _.first(_.shuffle(year.data));
-      i++;
+    myInterval = 0;
+    startRound = function() {
+      var i, randomHint, theyear, year, _i, _results;
+      theyear = _.first(_.shuffle((function() {
+        _results = [];
+        for (_i = 1980; _i <= 2011; _i++){ _results.push(_i); }
+        return _results;
+      }).apply(this, arguments)));
+      $('.progress').attr({
+        title: theyear
+      });
+      i = 0;
+      year = years[theyear];
       hint.set({
-        text: data.text
+        year: theyear
       });
-      $(".progress").html("").css({
-        width: i * 10 + "px"
-      });
-      return _.delay(randomHint, 6000);
+      horst.render();
+      randomHint = function() {
+        var data;
+        data = _.first(_.shuffle(year.data));
+        i++;
+        hint.set({
+          text: data.text
+        });
+        return $(".progress").html("").css({
+          width: i * 10 + "px"
+        });
+      };
+      randomHint();
+      if (myInterval !== 0) {
+        clearInterval(myInterval);
+      }
+      return myInterval = setInterval(randomHint, 6000);
     };
-    randomHint();
+    startRound();
     $(".hint").bind("click", function(ev) {
       ev.preventDefault();
-      return alert($(this).html() + " / " + hint.get("year"));
+      return window.location.reload();
     });
     $(".decade .value").bind("touchstart", function() {
       $(".timeline").addClass("hover");
@@ -95,14 +107,66 @@
       $(this).addClass("hover");
       if (hint.get("year") === $(this).html()) {
         alert("yeah");
-        return window.location.reload();
+        startRound();
+        points += 10;
       } else {
+        points -= 10;
         alert("booooh " + hint.get("year"));
-        return window.location.reload();
+        startRound();
       }
+      $('.points .value').html(points);
+      $(".year").removeClass("hover");
+      $(".decade .value").removeClass("hover");
+      $(".decade").removeClass("hover");
+      return $(".timeline").removeClass("hover");
     });
-    return $(document).bind("touchmove", function(ev) {
+    $(document).bind("touchmove", function(ev) {
       return ev.preventDefault();
+    });
+    moved = false;
+    nearestLeft = null;
+    $(".timeline").bind("touchmove", function(ev) {
+      var nearestDiffLeft, nearestDiffTop, nearestTop, pageX, pageY;
+      nearestDiffLeft = 99999;
+      nearestTop = null;
+      nearestDiffTop = 99999;
+      pageX = ev.originalEvent.changedTouches[0].pageX;
+      pageY = ev.originalEvent.changedTouches[0].pageY;
+      $(".decade .value").removeClass("hover");
+      $(".decade").removeClass("hover");
+      $(".year").removeClass("hover");
+      $(".years").removeClass("hover");
+      $(".decade .value").each(function(i, el) {
+        var left;
+        left = $(el).offset().left + 70;
+        if (Math.abs(left - pageX) < nearestDiffLeft) {
+          nearestDiffLeft = Math.abs(left - pageX);
+          return nearestLeft = $(el);
+        }
+      });
+      $(nearestLeft).parent(".decade").find(".year").each(function(i, el) {
+        var top;
+        top = $(el).offset().top;
+        top = 210 + i * 46;
+        if (Math.abs(top - pageY) < nearestDiffTop) {
+          nearestDiffTop = Math.abs(top - pageY);
+          nearestTop = $(el);
+          moved = true;
+          return $('.points').html(nearestTop.html());
+        }
+      });
+      $(".timeline").addClass("hover");
+      nearestLeft.addClass("hover");
+      nearestLeft.parent(".decade").addClass("hover");
+      nearestTop.addClass("hover");
+      return $(".years").addClass("hover");
+    });
+    return $(".timeline").bind("xxx", function(ev) {
+      if (!moved) {
+        return false;
+      }
+      moved = false;
+      return alert(nearestLeft.html());
     });
   });
 }).call(this);
