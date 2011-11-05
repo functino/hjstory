@@ -8,16 +8,17 @@
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   jQuery(function($) {
-    var Hint, Horst, hint, horst, randomHint, year, _i, _results;
-    year = _.first(_.shuffle((function() {
+    var Hint, Horst, hint, horst, i, randomHint, theyear, year, _i, _results;
+    theyear = _.first(_.shuffle((function() {
       _results = [];
       for (_i = 1980; _i <= 2011; _i++){ _results.push(_i); }
       return _results;
     }).apply(this, arguments)));
     $('.progress').attr({
-      title: year
+      title: theyear
     });
-    year = years[year];
+    i = 0;
+    year = years[theyear];
     Hint = (function() {
       function Hint() {
         Hint.__super__.constructor.apply(this, arguments);
@@ -49,15 +50,16 @@
         if (length > 200) {
           css = "large";
         }
-        this.el.addClass(css);
-        return this.el.html(this.template({
+        this.el.html(this.template({
           text: this.model.get("text")
         }));
+        return this.el.addClass(css);
       };
       return Horst;
     })();
     hint = new Hint({
-      text: "Starting...."
+      text: "Starting....",
+      year: theyear
     });
     horst = new Horst({
       el: $(".hint"),
@@ -67,11 +69,40 @@
     randomHint = function() {
       var data;
       data = _.first(_.shuffle(year.data));
+      i++;
       hint.set({
         text: data.text
       });
+      $(".progress").html("").css({
+        width: i * 10 + "px"
+      });
       return _.delay(randomHint, 6000);
     };
-    return randomHint();
+    randomHint();
+    $(".hint").bind("click", function(ev) {
+      ev.preventDefault();
+      return alert($(this).html() + " / " + hint.get("year"));
+    });
+    $(".decade .value").bind("touchstart", function() {
+      $(".timeline").addClass("hover");
+      $(".decade").removeClass("hover");
+      $(".decade .value").removeClass("hover");
+      $(this).addClass("hover");
+      return $(this).parent(".decade").addClass("hover");
+    });
+    $(".year").bind("touchstart", function() {
+      $(".year").removeClass("hover");
+      $(this).addClass("hover");
+      if (hint.get("year") === $(this).html()) {
+        alert("yeah");
+        return window.location.reload();
+      } else {
+        alert("booooh " + hint.get("year"));
+        return window.location.reload();
+      }
+    });
+    return $(document).bind("touchmove", function(ev) {
+      return ev.preventDefault();
+    });
   });
 }).call(this);
