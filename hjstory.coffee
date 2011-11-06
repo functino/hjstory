@@ -1,6 +1,29 @@
 jQuery ($) ->
   class Hint extends Backbone.Model
 
+  class Player extends Backbone.Model
+    incorrect: ->
+      @set(lives: @get("lives") - 1)
+    correct: ->
+      @set(points: @get("points") + 10)
+
+  class PlayerView extends Backbone.View
+	  initialize: ->
+      @model.bind "change", =>
+        @render()
+    template: _.template($("#health-template").html())
+    render: ->
+      @el.html(@template(lives: @model.get("lives")))
+
+  class PointsView extends Backbone.View
+    initialize: ->
+      @model.bind "change", =>
+        @render()
+    template: _.template($("#points-template").html())
+    render: ->
+      @el.html(@template(points: @model.get("points")))
+      
+
   class Horst extends Backbone.View
     initialize: ->
       @model.bind "change", =>
@@ -20,9 +43,13 @@ jQuery ($) ->
 
       @el.html(@template(text: @model.get("text")))
       @el.addClass(css)
-  points = 0;
   hint = new Hint(text: "Starting....", year: 0)
   horst = new Horst(el: $(".hint"), model: hint)
+  player = new Player(lives: 3, points: 0)
+  playerView = new PlayerView(el: $(".health"), model: player)
+  pointsView = new PointsView(el: $(".points"), model: player)
+  playerView.render()
+  pointsView.render()
   myInterval = 0
   startRound = ->
     theyear = _.first(_.shuffle([1980..2011]))
@@ -56,19 +83,15 @@ jQuery ($) ->
     $(@).parent(".decade").addClass("hover")
 
 
-
   $(".year").bind "touchstart", ->
     $(".year").removeClass("hover")
     $(@).addClass("hover")
-    if (hint.get("year") == $(@).html())
-      alert("yeah")
-      startRound()
-      points+=10
+    hint.set(text: hint.get("year"))
+    if (parseInt(hint.get("year")) == parseInt($(@).html()))
+      player.correct()
     else 
-      points-=10
-      alert "booooh " + hint.get("year")
-      startRound()
-    $('.points .value').html(points)
+      player.incorrect()
+    _.delay startRound, 6000
     $(".year").removeClass("hover")
     $(".decade .value").removeClass("hover")
     $(".decade").removeClass("hover")
@@ -114,6 +137,17 @@ jQuery ($) ->
       return false
     moved = false
     $(".selectedYear").html(nearestTop.html()).removeClass("active")
+    $(".year").removeClass("hover")
+    $(".decade .value").removeClass("hover")
+    $(".decade").removeClass("hover")
+    $(".timeline").removeClass("hover")
+    $(".year").removeClass("hover")
+    hint.set(text: hint.get("year"))
+    if (parseInt(hint.get("year")) == parseInt(nearestTop.html()))
+      player.correct()
+    else 
+      player.incorrect()
+    _.delay startRound, 6000
     $(".year").removeClass("hover")
     $(".decade .value").removeClass("hover")
     $(".decade").removeClass("hover")

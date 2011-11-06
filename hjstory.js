@@ -8,13 +8,66 @@
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   jQuery(function($) {
-    var Hint, Horst, hint, horst, moved, myInterval, nearestLeft, nearestTop, points, startRound;
+    var Hint, Horst, Player, PlayerView, PointsView, hint, horst, moved, myInterval, nearestLeft, nearestTop, player, playerView, pointsView, startRound;
     Hint = (function() {
       function Hint() {
         Hint.__super__.constructor.apply(this, arguments);
       }
       __extends(Hint, Backbone.Model);
       return Hint;
+    })();
+    Player = (function() {
+      function Player() {
+        Player.__super__.constructor.apply(this, arguments);
+      }
+      __extends(Player, Backbone.Model);
+      Player.prototype.incorrect = function() {
+        return this.set({
+          lives: this.get("lives") - 1
+        });
+      };
+      Player.prototype.correct = function() {
+        return this.set({
+          points: this.get("points") + 10
+        });
+      };
+      return Player;
+    })();
+    PlayerView = (function() {
+      function PlayerView() {
+        PlayerView.__super__.constructor.apply(this, arguments);
+      }
+      __extends(PlayerView, Backbone.View);
+      PlayerView.prototype.initialize = function() {
+        return this.model.bind("change", __bind(function() {
+          return this.render();
+        }, this));
+      };
+      PlayerView.prototype.template = _.template($("#health-template").html());
+      PlayerView.prototype.render = function() {
+        return this.el.html(this.template({
+          lives: this.model.get("lives")
+        }));
+      };
+      return PlayerView;
+    })();
+    PointsView = (function() {
+      function PointsView() {
+        PointsView.__super__.constructor.apply(this, arguments);
+      }
+      __extends(PointsView, Backbone.View);
+      PointsView.prototype.initialize = function() {
+        return this.model.bind("change", __bind(function() {
+          return this.render();
+        }, this));
+      };
+      PointsView.prototype.template = _.template($("#points-template").html());
+      PointsView.prototype.render = function() {
+        return this.el.html(this.template({
+          points: this.model.get("points")
+        }));
+      };
+      return PointsView;
     })();
     Horst = (function() {
       function Horst() {
@@ -47,7 +100,6 @@
       };
       return Horst;
     })();
-    points = 0;
     hint = new Hint({
       text: "Starting....",
       year: 0
@@ -56,6 +108,20 @@
       el: $(".hint"),
       model: hint
     });
+    player = new Player({
+      lives: 3,
+      points: 0
+    });
+    playerView = new PlayerView({
+      el: $(".health"),
+      model: player
+    });
+    pointsView = new PointsView({
+      el: $(".points"),
+      model: player
+    });
+    playerView.render();
+    pointsView.render();
     myInterval = 0;
     startRound = function() {
       var i, randomHint, theyear, year, _i, _results;
@@ -105,16 +171,15 @@
     $(".year").bind("touchstart", function() {
       $(".year").removeClass("hover");
       $(this).addClass("hover");
-      if (hint.get("year") === $(this).html()) {
-        alert("yeah");
-        startRound();
-        points += 10;
+      hint.set({
+        text: hint.get("year")
+      });
+      if (parseInt(hint.get("year")) === parseInt($(this).html())) {
+        player.correct();
       } else {
-        points -= 10;
-        alert("booooh " + hint.get("year"));
-        startRound();
+        player.incorrect();
       }
-      $('.points .value').html(points);
+      _.delay(startRound, 6000);
       $(".year").removeClass("hover");
       $(".decade .value").removeClass("hover");
       $(".decade").removeClass("hover");
@@ -167,6 +232,20 @@
       }
       moved = false;
       $(".selectedYear").html(nearestTop.html()).removeClass("active");
+      $(".year").removeClass("hover");
+      $(".decade .value").removeClass("hover");
+      $(".decade").removeClass("hover");
+      $(".timeline").removeClass("hover");
+      $(".year").removeClass("hover");
+      hint.set({
+        text: hint.get("year")
+      });
+      if (parseInt(hint.get("year")) === parseInt(nearestTop.html())) {
+        player.correct();
+      } else {
+        player.incorrect();
+      }
+      _.delay(startRound, 6000);
       $(".year").removeClass("hover");
       $(".decade .value").removeClass("hover");
       $(".decade").removeClass("hover");

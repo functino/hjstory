@@ -217,12 +217,12 @@
         
         .progress {
             position: absolute;
-            top: 18px;
+            top: 13px;
             left: 250px;
             border: 1px #EEE solid;
             opacity: 0.9;
             border-radius: 5px;
-            height: 20px;
+            height: 25px;
             background-color: white;
             background-image: url(bgworld-big.jpg);
             background-position: -100px 500px;
@@ -314,6 +314,7 @@ $(document).bind("touchstart", function(){
     }
     started = true
     a = new Audio("bg.mp3");
+    a.addEventListener('ended', function(){a.play();}, false);
     a.load();
     a.play()    
 });
@@ -325,11 +326,8 @@ $(document).bind("touchstart", function(){
         2004
     </div>
     <div class="points">
-        <img src="icons/48x48/star.png" />
-        <span class="value">0</spaan>
     </div>    
     <div class="health">
-        <img src="icons/48x48/favourites.png" class="live"/>        <img src="icons/48x48/favourites.png" class="live"/>        <img src="icons/48x48/favourites.png" class="live lost" />
     </div>    
     </div>
     <div class="pause">
@@ -492,6 +490,17 @@ $(document).bind("touchstart", function(){
         <% }); %>
     </div>
 </div>
+</script>
+
+<script type="text/template" id="health-template">
+<% for(i = 0; i < lives; i++){ %>
+    <img src="icons/48x48/favourites.png" class="live"/>
+<% } %>
+</script>
+
+<script type="text/template" id="points-template">
+<img src="icons/48x48/star.png" />
+<span class="value"><%= points %></spaan>
 </script>
 
 </body>
