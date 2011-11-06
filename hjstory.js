@@ -8,7 +8,7 @@
     return child;
   }, __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   jQuery(function($) {
-    var Hint, Horst, hint, horst, moved, myInterval, nearestLeft, points, startRound;
+    var Hint, Horst, hint, horst, moved, myInterval, nearestLeft, nearestTop, points, startRound;
     Hint = (function() {
       function Hint() {
         Hint.__super__.constructor.apply(this, arguments);
@@ -125,10 +125,10 @@
     });
     moved = false;
     nearestLeft = null;
+    nearestTop = null;
     $(".timeline").bind("touchmove", function(ev) {
-      var nearestDiffLeft, nearestDiffTop, nearestTop, pageX, pageY;
+      var nearestDiffLeft, nearestDiffTop, pageX, pageY;
       nearestDiffLeft = 99999;
-      nearestTop = null;
       nearestDiffTop = 99999;
       pageX = ev.originalEvent.changedTouches[0].pageX;
       pageY = ev.originalEvent.changedTouches[0].pageY;
@@ -151,22 +151,26 @@
         if (Math.abs(top - pageY) < nearestDiffTop) {
           nearestDiffTop = Math.abs(top - pageY);
           nearestTop = $(el);
-          moved = true;
-          return $('.points').html(nearestTop.html());
+          return moved = true;
         }
       });
       $(".timeline").addClass("hover");
       nearestLeft.addClass("hover");
       nearestLeft.parent(".decade").addClass("hover");
       nearestTop.addClass("hover");
-      return $(".years").addClass("hover");
+      $(".years").addClass("hover");
+      return $(".selectedYear").html(nearestTop.html()).addClass("active");
     });
-    return $(".timeline").bind("xxx", function(ev) {
+    return $(".timeline").bind("touchend", function(ev) {
       if (!moved) {
         return false;
       }
       moved = false;
-      return alert(nearestLeft.html());
+      $(".selectedYear").html(nearestTop.html()).removeClass("active");
+      $(".year").removeClass("hover");
+      $(".decade .value").removeClass("hover");
+      $(".decade").removeClass("hover");
+      return $(".timeline").removeClass("hover");
     });
   });
 }).call(this);

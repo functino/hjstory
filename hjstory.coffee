@@ -18,7 +18,7 @@ jQuery ($) ->
 	    if length > 200
 	      css = "large"
 
-      @el.html(@template(text: @model.get("text")));
+      @el.html(@template(text: @model.get("text")))
       @el.addClass(css)
   points = 0;
   hint = new Hint(text: "Starting....", year: 0)
@@ -26,7 +26,7 @@ jQuery ($) ->
   myInterval = 0
   startRound = ->
     theyear = _.first(_.shuffle([1980..2011]))
-    $('.progress').attr(title: theyear);
+    $('.progress').attr(title: theyear)
     i = 0;
     year = years[theyear]
     hint.set(year: theyear)
@@ -35,11 +35,11 @@ jQuery ($) ->
       data = _.first(_.shuffle year.data)
       i++
       hint.set(text: data.text);
-      $(".progress").html("").css(width: i*10 + "px");
+      $(".progress").html("").css(width: i*10 + "px")
     randomHint();
     clearInterval(myInterval) if myInterval != 0 
     myInterval = setInterval(randomHint, 6000)
-  startRound();
+  startRound()
 
 #  t = _.template($('#decade-template').html())
 #  $('.health').html(t(decade: 2000, years: [2000, 2001]))
@@ -68,7 +68,7 @@ jQuery ($) ->
       points-=10
       alert "booooh " + hint.get("year")
       startRound()
-    $('.points .value').html(points);
+    $('.points .value').html(points)
     $(".year").removeClass("hover")
     $(".decade .value").removeClass("hover")
     $(".decade").removeClass("hover")
@@ -79,9 +79,9 @@ jQuery ($) ->
 
   moved = false
   nearestLeft = null
+  nearestTop = null
   $(".timeline").bind "touchmove", (ev) ->
     nearestDiffLeft = 99999
-    nearestTop = null
     nearestDiffTop = 99999
     pageX = ev.originalEvent.changedTouches[0].pageX
     pageY = ev.originalEvent.changedTouches[0].pageY
@@ -90,7 +90,7 @@ jQuery ($) ->
     $(".year").removeClass("hover")
     $(".years").removeClass("hover")
     $(".decade .value").each (i, el) ->
-      left = $(el).offset().left + 70;
+      left = $(el).offset().left + 70
       if Math.abs(left - pageX) < nearestDiffLeft
         nearestDiffLeft = Math.abs(left - pageX)
         nearestLeft = $(el)
@@ -102,16 +102,21 @@ jQuery ($) ->
         nearestDiffTop = Math.abs(top - pageY)
         nearestTop = $(el)
         moved = true
-        $('.points').html(nearestTop.html());
     $(".timeline").addClass("hover")
     nearestLeft.addClass("hover")
     nearestLeft.parent(".decade").addClass("hover")
     nearestTop.addClass("hover")
     $(".years").addClass("hover")
+    $(".selectedYear").html(nearestTop.html()).addClass("active")
 
-  $(".timeline").bind "xxx", (ev) ->
+  $(".timeline").bind "touchend", (ev) ->
     if !moved
       return false
     moved = false
-    alert nearestLeft.html()
+    $(".selectedYear").html(nearestTop.html()).removeClass("active")
+    $(".year").removeClass("hover")
+    $(".decade .value").removeClass("hover")
+    $(".decade").removeClass("hover")
+    $(".timeline").removeClass("hover")
+    
 

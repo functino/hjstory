@@ -23,7 +23,8 @@
             font-size: 20px;
             font-family: Cabin Sketch, Droid Sans;
             color: white;
-            background: url(darkbg2.png);
+            background: url(bgworld-big.jpg);
+            background-position: left -237px;
             width: 1024px;
             height:768px;
             margin:0 auto;
@@ -234,7 +235,28 @@
             opacity:0.8;
         }
         
-        
+        .selectedYear {
+            display:none;
+        }
+        .selectedYear.active
+        {
+            position: absolute;
+            top: -10px;
+            left: 400px;
+            width: 200px;
+            background-color: rgba(218, 192, 90, 0.99);
+            text-shadow: 1px 1px 1px black;
+            border-radius: 10px;
+            color: #132A1A;
+            text-align: center;
+            padding: 15px;
+            padding-top: 25px;
+            font-size: 70px;
+            display: block;
+            border: 3px #132A1A solid;
+            background-image: url(bgworld-big.jpg);
+            background-position: right center;
+        }
         
         /*
         @-webkit-keyframes goin {
@@ -262,6 +284,9 @@
 <body>
 <div class="body">
     <div class="container">
+    <div class="selectedYear">
+        2004
+    </div>
     <div class="points">
         <img src="icons/48x48/star.png" />
         <span class="value">0</spaan>
