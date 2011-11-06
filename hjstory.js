@@ -80,8 +80,8 @@
         hint.set({
           text: data.text
         });
-        return $(".progress").html("").css({
-          width: i * 10 + "px"
+        return $(".progress").css({
+          width: 500 - i * 25 + "px"
         });
       };
       randomHint();

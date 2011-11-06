@@ -35,7 +35,7 @@ jQuery ($) ->
       data = _.first(_.shuffle year.data)
       i++
       hint.set(text: data.text);
-      $(".progress").html("").css(width: i*10 + "px")
+      $(".progress").css(width: 500 - i*25 + "px")
     randomHint();
     clearInterval(myInterval) if myInterval != 0 
     myInterval = setInterval(randomHint, 6000)
