@@ -13,7 +13,7 @@ jQuery ($) ->
         @render()
     template: _.template($("#health-template").html())
     render: ->
-      @el.html(@template(lives: @model.get("lives")))
+      @$el.html(@template(lives: @model.get("lives")))
 
   class PointsView extends Backbone.View
     initialize: ->
@@ -21,7 +21,7 @@ jQuery ($) ->
         @render()
     template: _.template($("#points-template").html())
     render: ->
-      @el.html(@template(points: @model.get("points")))
+      @$el.html(@template(points: @model.get("points")))
       
 
   class Horst extends Backbone.View
@@ -31,9 +31,9 @@ jQuery ($) ->
     template: _.template($('#hint-template').html())	
     render: ->
 	    length = @model.get("text").length
-	    @el.removeClass("medium")
-	    @el.removeClass("normal")
-	    @el.removeClass("large")        
+	    @$el.removeClass("medium")
+	    @$el.removeClass("normal")
+	    @$el.removeClass("large")        
 
 	    css = "normal"
 	    if length > 100
@@ -41,8 +41,8 @@ jQuery ($) ->
 	    if length > 200
 	      css = "large"
 
-      @el.html(@template(text: @model.get("text")))
-      @el.addClass(css)
+      @$el.html(@template(text: @model.get("text")))
+      @$el.addClass(css)
   hint = new Hint(text: "Starting....", year: 0)
   horst = new Horst(el: $(".hint"), model: hint)
   player = new Player(lives: 3, points: 0)

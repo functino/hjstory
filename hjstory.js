@@ -45,7 +45,7 @@
       };
       PlayerView.prototype.template = _.template($("#health-template").html());
       PlayerView.prototype.render = function() {
-        return this.el.html(this.template({
+        return this.$el.html(this.template({
           lives: this.model.get("lives")
         }));
       };
@@ -63,7 +63,7 @@
       };
       PointsView.prototype.template = _.template($("#points-template").html());
       PointsView.prototype.render = function() {
-        return this.el.html(this.template({
+        return this.$el.html(this.template({
           points: this.model.get("points")
         }));
       };
@@ -83,9 +83,9 @@
       Horst.prototype.render = function() {
         var css, length;
         length = this.model.get("text").length;
-        this.el.removeClass("medium");
-        this.el.removeClass("normal");
-        this.el.removeClass("large");
+        this.$el.removeClass("medium");
+        this.$el.removeClass("normal");
+        this.$el.removeClass("large");
         css = "normal";
         if (length > 100) {
           css = "medium";
@@ -93,10 +93,10 @@
         if (length > 200) {
           css = "large";
         }
-        this.el.html(this.template({
+        this.$el.html(this.template({
           text: this.model.get("text")
         }));
-        return this.el.addClass(css);
+        return this.$el.addClass(css);
       };
       return Horst;
     })();
